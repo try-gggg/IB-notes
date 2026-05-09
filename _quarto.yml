@@ -8,6 +8,8 @@ project:
     - browse.qmd
     - generated/**/*.qmd
   resources:
+    - "site.js"
+    - "**/*.json"
     - "**/*.pdf"
     - "**/*.md"
     - "**/*.markdown"
