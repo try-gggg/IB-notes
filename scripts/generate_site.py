@@ -280,7 +280,7 @@ def escape_quotes(value: str) -> str:
 def write_note_pages(project_root: Path, entries: list[Entry], lookup: dict[str, list[Entry]]) -> None:
     for entry in entries:
         text = entry.source.read_text(encoding="utf-8", errors="ignore")
-        text = strip_front_matter(text)
+        text = sanitize_source_markdown(text)
         text = replace_wikilinks(text, entry, lookup)
         text = rewrite_asset_links(text, entry, project_root)
 
@@ -301,23 +301,52 @@ def write_note_pages(project_root: Path, entries: list[Entry], lookup: dict[str,
         output_path.write_text("\n".join(content), encoding="utf-8")
 
 
-def write_pdf_pages(project_root: Path, entries: list[Entry]) -> None:
-    for entry in entries:
-        output_path = project_root / entry.target
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(pdf_page(entry), encoding="utf-8")
+def sanitize_source_markdown(text: str) -> str:
+    cleaned = text.replace("\ufeff", "").replace("\r\n", "\n")
+    cleaned = cleaned.lstrip()
+
+    while True:
+        updated = remove_leading_comment_block(cleaned)
+        if updated == cleaned:
+            break
+        cleaned = updated.lstrip()
+
+    cleaned = strip_front_matter_like_block(cleaned).lstrip()
+
+    while True:
+        updated = remove_leading_comment_block(cleaned)
+        if updated == cleaned:
+            break
+        cleaned = updated.lstrip()
+
+    return cleaned
 
 
-def strip_front_matter(text: str) -> str:
-    if not text.startswith("---"):
+def remove_leading_comment_block(text: str) -> str:
+    if not text.startswith("%%"):
         return text
-    parts = text.split("\n")
-    if len(parts) < 3:
+
+    lines = text.split("\n")
+    if len(lines) == 1:
+        return ""
+
+    for index in range(1, len(lines)):
+        if lines[index].strip().startswith("%%"):
+            return "\n".join(lines[index + 1 :])
+
+    return "\n".join(lines[1:])
+
+
+def strip_front_matter_like_block(text: str) -> str:
+    if not text.startswith("---\n"):
         return text
-    for index in range(1, len(parts)):
-        if parts[index].strip() == "---":
-            return "\n".join(parts[index + 1 :]).lstrip()
-    return text
+
+    lines = text.split("\n")
+    for index in range(1, min(len(lines), 80)):
+        if lines[index].strip() == "---":
+            return "\n".join(lines[index + 1 :])
+
+    return "\n".join(lines[1:])
 
 
 def write_site_data(project_root: Path, note_entries: list[Entry], pdf_entries: list[Entry]) -> None:
