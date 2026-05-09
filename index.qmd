@@ -5,7 +5,7 @@ subtitle: "A friendlier way to browse notes, papers, and PDFs"
 
 Welcome to the published version of this note repository. The site is generated from the repo itself, so new folders, notes, and PDFs can be picked up automatically when the site is rebuilt.
 
-{{< include generated/includes/home-summary.qmd >}}
+<section id="home-summary"></section>
 
 ## How To Use This Site
 
@@ -16,4 +16,6 @@ Welcome to the published version of this note repository. The site is generated 
 
 ## Subjects
 
-{{< include generated/includes/subject-cards.qmd >}}
+<section id="subject-cards"></section>
+
+<script type="module" src="site.js"></script>
