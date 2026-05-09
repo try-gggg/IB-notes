@@ -1,0 +1,54 @@
+project:
+  type: website
+  output-dir: _site
+  pre-render:
+    - python scripts/generate_site.py
+  render:
+    - index.qmd
+    - browse.qmd
+    - generated/**/*.qmd
+  resources:
+    - "**/*.pdf"
+    - "**/*.md"
+    - "**/*.markdown"
+    - "**/*.png"
+    - "**/*.jpg"
+    - "**/*.jpeg"
+    - "**/*.gif"
+    - "**/*.svg"
+    - "**/*.webp"
+    - "**/*.avif"
+
+website:
+  title: "IB Notes Library"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: browse.qmd
+        text: Browse
+  search: true
+  page-navigation: true
+  reader-mode: true
+  back-to-top-navigation: true
+  repo-url: https://github.com/try-gggg/IB-notes
+  repo-actions: [source, issue]
+  page-footer:
+    left: "Shared study notes, rendered as a navigable library."
+    right: "Built with Quarto"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    smooth-scroll: true
+    link-external-newwindow: true
+    grid:
+      sidebar-width: 280px
+      body-width: 980px
+      margin-width: 260px
+
+execute:
+  freeze: auto
