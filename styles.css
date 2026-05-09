@@ -113,3 +113,16 @@ body {
   background: var(--site-surface);
   border-left: 4px solid var(--site-accent);
 }
+
+.catalog-heading {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.catalog-list {
+  margin-bottom: 2rem;
+}
+
+.catalog-list li {
+  margin-bottom: 0.4rem;
+}
