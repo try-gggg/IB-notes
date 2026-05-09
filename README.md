@@ -26,7 +26,7 @@ For context: my predicted grade is 41/42.
 
 ## Website Version
 
-This repository now includes a Quarto website setup so the notes can be published as a friendlier static site.
+This repository now includes a Quarto website setup so the notes can be published as a friendlier static site!
 
 What it does:
 
