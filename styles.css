@@ -1,0 +1,115 @@
+:root {
+  --site-accent: #176087;
+  --site-accent-soft: #eaf4fa;
+  --site-ink: #173042;
+  --site-border: #d6e3ea;
+  --site-surface: #f8fbfd;
+}
+
+body {
+  color: var(--site-ink);
+}
+
+.navbar {
+  border-bottom: 1px solid var(--site-border);
+}
+
+.quarto-title-banner {
+  background:
+    linear-gradient(135deg, rgba(23, 96, 135, 0.95), rgba(37, 129, 110, 0.9)),
+    linear-gradient(180deg, #f3f8fb, #ffffff);
+  color: #ffffff;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.subject-card {
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 30px rgba(23, 48, 66, 0.06);
+}
+
+.subject-card h3,
+.subject-card h4 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.subject-meta {
+  font-size: 0.95rem;
+  color: #4b6372;
+  margin-bottom: 0.8rem;
+}
+
+.subject-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.9rem;
+}
+
+.subject-actions a,
+.note-link-list a,
+.pdf-link-list a {
+  text-decoration: none;
+}
+
+.subject-badge {
+  display: inline-block;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: var(--site-accent-soft);
+  color: var(--site-accent);
+  margin-right: 0.35rem;
+}
+
+.quick-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.quick-fact {
+  background: var(--site-surface);
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+}
+
+.quick-fact strong {
+  display: block;
+  font-size: 1.35rem;
+  color: var(--site-accent);
+}
+
+.pdf-frame {
+  width: 100%;
+  min-height: 75vh;
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.catalog-section {
+  margin-bottom: 2.25rem;
+}
+
+.catalog-section ul {
+  padding-left: 1.15rem;
+}
+
+.source-links {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--site-surface);
+  border-left: 4px solid var(--site-accent);
+}
