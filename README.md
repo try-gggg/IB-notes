@@ -24,6 +24,31 @@ For context: my predicted grade is 41/42.
 
 **use of AI**: Usage of AI is acknowledged, but I can say I verified them all and most of the note are pure human (except some history note). Some prompts are shared.
 
+## Website Version
+
+This repository now includes a Quarto website setup so the notes can be published as a friendlier static site.
+
+What it does:
+
+1. scans the repository automatically
+2. builds subject landing pages from the top-level folders
+3. turns markdown notes into browser-readable pages
+4. creates preview pages for PDFs with direct download links
+
+To publish with GitHub Pages:
+
+1. go to `Settings -> Pages`
+2. make sure the source is set to `GitHub Actions`
+3. push to `main`, or run the `Publish Quarto Site` workflow manually
+
+Local build command:
+
+```bash
+quarto render
+```
+
+The generated navigation files are created automatically during the Quarto pre-render step by `scripts/generate_site.py`.
+
 ---
 
 ## License
