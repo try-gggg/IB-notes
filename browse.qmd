@@ -4,4 +4,6 @@ title: "Browse All Notes"
 
 This page is a full catalog of the repository, grouped by top-level subject folder.
 
-{{< include generated/includes/catalog.qmd >}}
+<section id="browse-catalog"></section>
+
+<script type="module" src="site.js"></script>
