@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
 import shutil
 from dataclasses import dataclass
@@ -39,6 +40,7 @@ EXCLUDED_FILES = {
     "README.md",
     "_quarto.yml",
     "styles.css",
+    "site.js",
 }
 
 
@@ -240,7 +242,7 @@ def note_front_matter(entry: Entry) -> str:
         [
             "---",
             f'title: "{escape_quotes(entry.title)}"',
-            f'breadcrumbs: true',
+            "breadcrumbs: true",
             "---",
             "",
         ]
@@ -318,70 +320,46 @@ def strip_front_matter(text: str) -> str:
     return text
 
 
-def write_includes(project_root: Path, note_entries: list[Entry], pdf_entries: list[Entry]) -> None:
-    includes_dir = project_root / "generated" / "includes"
-    includes_dir.mkdir(parents=True, exist_ok=True)
-
+def write_site_data(project_root: Path, note_entries: list[Entry], pdf_entries: list[Entry]) -> None:
     subjects = sorted(set([entry.subject for entry in note_entries + pdf_entries]), key=str.lower)
-    home_summary = "\n".join(
-        [
-            "## Quick Overview",
-            "",
-            '<div class="quick-facts">',
-            f'<div class="quick-fact"><strong>{len(subjects)}</strong>Subjects</div>',
-            f'<div class="quick-fact"><strong>{len(note_entries)}</strong>Rendered notes</div>',
-            f'<div class="quick-fact"><strong>{len(pdf_entries)}</strong>PDF references</div>',
-            "</div>",
-        ]
-    )
-    (includes_dir / "home-summary.qmd").write_text(home_summary, encoding="utf-8")
-
-    subject_cards = []
     note_groups = grouped_subjects(note_entries)
     pdf_groups = grouped_subjects(pdf_entries)
-    for subject in subjects:
-        subject_slug = slugify(subject)
-        note_count = len(note_groups.get(subject, []))
-        pdf_count = len(pdf_groups.get(subject, []))
-        subject_cards.extend(
-            [
-                '<section class="subject-card">',
-                f'<h3><a href="generated/subjects/{subject_slug}.qmd">{html.escape(subject)}</a></h3>',
-                f'<div class="subject-meta"><span class="subject-badge">{note_count} notes</span><span class="subject-badge">{pdf_count} PDFs</span></div>',
-                '<div class="subject-actions">',
-                f'<a href="generated/subjects/{subject_slug}.qmd">Open subject</a>',
-                "</div>",
-                "</section>",
-            ]
-        )
-    subject_cards_markup = "\n".join(["<div class=\"subject-grid\">", *subject_cards, "</div>"])
-    (includes_dir / "subject-cards.qmd").write_text(subject_cards_markup, encoding="utf-8")
+    subject_payload = []
 
-    catalog_parts: list[str] = []
     for subject in subjects:
         subject_slug = slugify(subject)
-        catalog_parts.extend(
-            [
-                f"## [{subject}](generated/subjects/{subject_slug}.qmd)",
-                "",
-                f"- Notes: {len(note_groups.get(subject, []))}",
-                f"- PDFs: {len(pdf_groups.get(subject, []))}",
-                "",
-            ]
+        notes = note_groups.get(subject, [])
+        pdfs = pdf_groups.get(subject, [])
+        subject_payload.append(
+            {
+                "title": subject,
+                "slug": subject_slug,
+                "href": f"generated/subjects/{subject_slug}.qmd",
+                "note_count": len(notes),
+                "pdf_count": len(pdfs),
+                "notes": [
+                    {"title": entry.title, "href": entry.target.as_posix()}
+                    for entry in notes
+                ],
+                "pdfs": [
+                    {"title": entry.title, "href": entry.target.as_posix()}
+                    for entry in pdfs
+                ],
+            }
         )
-        if note_groups.get(subject):
-            catalog_parts.append("### Notes")
-            catalog_parts.append("")
-            for entry in note_groups[subject]:
-                catalog_parts.append(f"- [{entry.title}]({entry.target.as_posix()})")
-            catalog_parts.append("")
-        if pdf_groups.get(subject):
-            catalog_parts.append("### PDFs")
-            catalog_parts.append("")
-            for entry in pdf_groups[subject]:
-                catalog_parts.append(f"- [{entry.title}]({entry.target.as_posix()})")
-            catalog_parts.append("")
-    (includes_dir / "catalog.qmd").write_text("\n".join(catalog_parts).rstrip() + "\n", encoding="utf-8")
+
+    payload = {
+        "summary": {
+            "subjects": len(subjects),
+            "notes": len(note_entries),
+            "pdfs": len(pdf_entries),
+        },
+        "subjects": subject_payload,
+    }
+
+    output_path = project_root / "generated" / "site-data.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def write_subject_pages(project_root: Path, note_entries: list[Entry], pdf_entries: list[Entry]) -> None:
@@ -459,7 +437,7 @@ def main() -> None:
     write_note_pages(project_root, note_entries, lookup)
     write_pdf_pages(project_root, pdf_entries)
     write_subject_pages(project_root, note_entries, pdf_entries)
-    write_includes(project_root, note_entries, pdf_entries)
+    write_site_data(project_root, note_entries, pdf_entries)
 
     print(
         f"Generated {len(note_entries)} note pages, {len(pdf_entries)} PDF pages, "
