@@ -1,0 +1,19 @@
+---
+title: "IB Notes Library"
+subtitle: "A friendlier way to browse notes, papers, and PDFs"
+---
+
+Welcome to the published version of this note repository. The site is generated from the repo itself, so new folders, notes, and PDFs can be picked up automatically when the site is rebuilt.
+
+{{< include generated/includes/home-summary.qmd >}}
+
+## How To Use This Site
+
+- Start with a subject card below, or jump to the full [Browse](browse.qmd) page.
+- Open note pages to read them in the browser with search, headings, and links.
+- Open PDF pages to preview the file and download the original.
+- Use the repository link in the top bar if you want the raw source files.
+
+## Subjects
+
+{{< include generated/includes/subject-cards.qmd >}}
